@@ -75,7 +75,6 @@ def validate(l_predicted, l_expected, l_sizes):
             tnr_micro(confusion_matrix_t)]
 
 
-#todo: review this method
 def overlapped(candidate, non_overlapped):
     if len(non_overlapped) == 0:
         return False
@@ -91,7 +90,6 @@ def overlapped(candidate, non_overlapped):
     return False
 
 
-#todo: adapt this method
 def get_best_candidates(l_candidates):
     result = []
     candidates_sorted = sorted(l_candidates, key=lambda x: x[1], reverse=True)
@@ -102,7 +100,6 @@ def get_best_candidates(l_candidates):
     return result
 
 
-#todo: adapt this method
 def evaluate(test, model):
 
     # line -> [tokens, deptree, conditions, candidates]
@@ -115,10 +112,6 @@ def evaluate(test, model):
         l_sizes.append(len(line[0]))
         x = [candidate[1] for candidate in line[3]]
         sequences = [candidate[0] for candidate in line[3]]
-        '''
-        todo: model.predict(x) doesn't return scores anymore. We have now a classification problem so we have
-        positives, negatives an its scores
-        '''
         l_scores = model.predict(x)
         l_candidates = [[sequence, score[0]] for sequence, candidate, score in zip(sequences, x, l_scores)]
         l_predicted.append(get_best_candidates(l_candidates))
