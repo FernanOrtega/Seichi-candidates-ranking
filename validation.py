@@ -61,7 +61,7 @@ def validate(l_predicted, l_expected, l_sizes):
         for k, v in d.items():
             confusion_matrix[k] += v
     confusion_matrix_t = Counter()
-    for d in l_conf_matrices:
+    for d in l_conf_matrices_t:
         for k, v in d.items():
             confusion_matrix_t[k] += v
 
@@ -104,14 +104,14 @@ def evaluate(test, model):
 
     # line -> [tokens, deptree, conditions, candidates]
     # candidate -> [token_indexes, tokens_and_deptag, score]
-    l_expected = [line[2] for line in test]
+    l_expected = [line[1] for line in test]
     l_predicted = []
     l_sizes = []
 
     for line in test:
-        l_sizes.append(len(line[0]))
-        x = [candidate[1] for candidate in line[3]]
-        sequences = [candidate[0] for candidate in line[3]]
+        l_sizes.append(len([token for block in line[0] for token in block]))
+        x = [candidate[1] for candidate in line[2]]
+        sequences = [candidate[0] for candidate in line[2]]
         l_scores = model.predict(x)
         l_candidates = [[sequence, score[0]] for sequence, candidate, score in zip(sequences, x, l_scores)]
         l_predicted.append(get_best_candidates(l_candidates))

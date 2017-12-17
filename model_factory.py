@@ -4,7 +4,7 @@ import numpy as np
 from keras import Input
 from keras.callbacks import EarlyStopping
 from keras.engine import Model
-from keras.layers import Dense, Dropout, Bidirectional, GRU, MaxPooling1D, Conv1D, Masking, Flatten
+from keras.layers import Dense, Dropout, Masking, Flatten
 from keras.preprocessing import sequence
 
 
@@ -30,8 +30,8 @@ def one_hot_encode(number, size_vector):
 def fit_model(model_option, train, w2v_model):
     # line -> [tokens, deptree, conditions, candidates]
     # candidate -> [token_indexes, tokens_and_deptag, score]
-    x = [candidate[1] for line in train for candidate in line[3]]
-    y = [candidate[2] for line in train for candidate in line[3]]
+    x = [candidate[1] for line in train for candidate in line[2]]
+    y = [candidate[2] for line in train for candidate in line[2]]
 
     start = time.time()
     model = model_option(w2v_model)
@@ -42,7 +42,7 @@ def fit_model(model_option, train, w2v_model):
     early_stop_callback = EarlyStopping(monitor='loss', min_delta=0.001, patience=10, verbose=1, mode='auto')
 
     start = time.time()
-    model.fit(x, y, batch_size=32, epochs=150, verbose=2, callbacks=[early_stop_callback])
+    model.fit(x, y, batch_size=32, epochs=1, verbose=2, callbacks=[early_stop_callback])
     end = time.time()
     print('Fit done! {}'.format((end - start)))
 
@@ -91,7 +91,7 @@ class MLPLinear(ModelBase):
         self.model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['mae'])
 
     def fit(self, x, y, batch_size, epochs, verbose, callbacks):
-        x_preprocessed = np.array([[t[0] for t in row] for row in x])
+        x_preprocessed = np.array(x)
         x_preprocessed = sequence.pad_sequences(x_preprocessed, maxlen=self.maxlen, value=-1)
 
         y_preprocessed = np.array(y)
@@ -100,7 +100,7 @@ class MLPLinear(ModelBase):
                        callbacks=callbacks)
 
     def predict(self, x):
-        x_preprocessed = np.array([[t[0] for t in row] for row in x])
+        x_preprocessed = np.array(x)
         x_preprocessed = sequence.pad_sequences(x_preprocessed, maxlen=self.maxlen, value=-1)
 
         return self.model.predict(x_preprocessed)
@@ -125,7 +125,7 @@ class MLPSigmoid(ModelBase):
         self.model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['mae'])
 
     def fit(self, x, y, batch_size, epochs, verbose, callbacks):
-        x_preprocessed = np.array([[t[0] for t in row] for row in x])
+        x_preprocessed = np.array(x)
         x_preprocessed = sequence.pad_sequences(x_preprocessed, maxlen=self.maxlen, value=-1)
 
         y_preprocessed = np.array(y)
@@ -134,7 +134,7 @@ class MLPSigmoid(ModelBase):
                        callbacks=callbacks)
 
     def predict(self, x):
-        x_preprocessed = np.array([[t[0] for t in row] for row in x])
+        x_preprocessed = np.array(x)
         x_preprocessed = sequence.pad_sequences(x_preprocessed, maxlen=self.maxlen, value=-1)
 
         return self.model.predict(x_preprocessed)
@@ -159,7 +159,7 @@ class MLPRelu(ModelBase):
         self.model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['mae'])
 
     def fit(self, x, y, batch_size, epochs, verbose, callbacks):
-        x_preprocessed = np.array([[t[0] for t in row] for row in x])
+        x_preprocessed = np.array(x)
         x_preprocessed = sequence.pad_sequences(x_preprocessed, maxlen=self.maxlen, value=-1)
 
         y_preprocessed = np.array(y)
@@ -168,7 +168,7 @@ class MLPRelu(ModelBase):
                        callbacks=callbacks)
 
     def predict(self, x):
-        x_preprocessed = np.array([[t[0] for t in row] for row in x])
+        x_preprocessed = np.array(x)
         x_preprocessed = sequence.pad_sequences(x_preprocessed, maxlen=self.maxlen, value=-1)
 
         return self.model.predict(x_preprocessed)
@@ -193,7 +193,7 @@ class MLPSoftmax(ModelBase):
         self.model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['mae'])
 
     def fit(self, x, y, batch_size, epochs, verbose, callbacks):
-        x_preprocessed = np.array([[t[0] for t in row] for row in x])
+        x_preprocessed = np.array(x)
         x_preprocessed = sequence.pad_sequences(x_preprocessed, maxlen=self.maxlen, value=-1)
 
         y_preprocessed = np.array(y)
@@ -202,7 +202,7 @@ class MLPSoftmax(ModelBase):
                        callbacks=callbacks)
 
     def predict(self, x):
-        x_preprocessed = np.array([[t[0] for t in row] for row in x])
+        x_preprocessed = np.array(x)
         x_preprocessed = sequence.pad_sequences(x_preprocessed, maxlen=self.maxlen, value=-1)
 
         return self.model.predict(x_preprocessed)

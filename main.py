@@ -1,13 +1,13 @@
 import os
 import sys
 import time
-import numpy as np
 from random import shuffle
 
-from model_factory import fit_model, get_model
+import numpy as np
 from sklearn.model_selection import KFold
 
 from candidates_creator import compute_candidates
+from model_factory import fit_model, get_model
 from validation import evaluate
 from word_vectorizer import WordEmbeddings
 
@@ -34,7 +34,7 @@ def execute_experiments(dataset, w2v_model, n_splits, model_option, output_csv_p
     folds = KFold(n_splits=n_splits, random_state=7, shuffle=False)
     splits = [(train_index, test_index) for train_index, test_index in folds.split(dataset)]
 
-    prep_dataset = np.array([[row[0], row[1], row[2], compute_candidates(row, w2v_model)] for row in dataset])
+    prep_dataset = np.array([[row[0], row[1], compute_candidates(row, w2v_model)] for row in dataset])
     for train_index, test_index in splits:
         train, test = prep_dataset[train_index], prep_dataset[test_index]
         model = fit_model(model_option, train, w2v_model)
