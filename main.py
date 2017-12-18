@@ -53,8 +53,7 @@ def main():
         exit()
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-
-    dataset = [eval(line) for line in open(os.path.join(dir_path, args[0]), encoding='utf-8')]
+    data_set = [eval(file_line) for file_line in open(os.path.join(dir_path, args[0]), encoding='utf-8')]
     lang = args[1]
     start = time.time()
     w2v_model = WordEmbeddings(lang, os.path.join(dir_path, args[2]))
@@ -64,7 +63,7 @@ def main():
     model_option = get_model(args[4])
     output_csv_path = os.path.join(dir_path, args[5])
 
-    execute_experiments(dataset, w2v_model, n_splits, model_option, output_csv_path)
+    execute_experiments(data_set, w2v_model, n_splits, model_option, output_csv_path)
 
 
 if __name__ == '__main__':
