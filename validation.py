@@ -90,17 +90,17 @@ def overlapped(candidate, non_overlapped):
     return False
 
 
-def get_best_candidates(l_candidates):
+def get_best_candidates(l_candidates, score_threshold):
     result = []
     candidates_sorted = sorted(l_candidates, key=lambda x: x[1], reverse=True)
     for candidate in candidates_sorted:
-        if candidate[1] >= 0.5 and not overlapped(candidate[0], result):
+        if candidate[1] >= score_threshold and not overlapped(candidate[0], result):
             result.append(candidate[0])
 
     return result
 
 
-def evaluate(test, model):
+def evaluate(test, model, score_threshold):
 
     # line -> [tokens, deptree, conditions, candidates]
     # candidate -> [token_indexes, tokens_and_deptag, score]
@@ -114,6 +114,6 @@ def evaluate(test, model):
         sequences = [candidate[0] for candidate in line[2]]
         l_scores = model.predict(x)
         l_candidates = [[sequence, score[0]] for sequence, candidate, score in zip(sequences, x, l_scores)]
-        l_predicted.append(get_best_candidates(l_candidates))
+        l_predicted.append(get_best_candidates(l_candidates, score_threshold))
 
     return validate(l_predicted, l_expected, l_sizes)

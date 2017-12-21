@@ -27,7 +27,7 @@ def save_results(results, output_csv_path):
             writer.writerow(item)
 
 
-def execute_experiments(dataset, w2v_model, n_splits, model_option, output_csv_path):
+def execute_experiments(dataset, w2v_model, n_splits, model_option, output_csv_path, score_threshold):
     results = []
 
     shuffle(dataset)
@@ -38,7 +38,7 @@ def execute_experiments(dataset, w2v_model, n_splits, model_option, output_csv_p
     for train_index, test_index in splits:
         train, test = prep_dataset[train_index], prep_dataset[test_index]
         model = fit_model(model_option, train, w2v_model)
-        results.append(evaluate(test, model))
+        results.append(evaluate(test, model, score_threshold))
 
     save_results(results, output_csv_path)
 
@@ -46,7 +46,7 @@ def execute_experiments(dataset, w2v_model, n_splits, model_option, output_csv_p
 def main():
     args = sys.argv[1:]
 
-    if len(args) != 6:
+    if len(args) != 7:
         print('Wrong number of arguments')
         print('Usage (relative paths!!): main.py <dataset path> <lang> <word2vec model path>'
               ' <# folds> <model option> <output csv path>')
@@ -62,8 +62,9 @@ def main():
     n_splits = int(args[3])
     model_option = get_model(args[4])
     output_csv_path = os.path.join(dir_path, args[5])
+    score_threshold = int(args[6])
 
-    execute_experiments(data_set, w2v_model, n_splits, model_option, output_csv_path)
+    execute_experiments(data_set, w2v_model, n_splits, model_option, output_csv_path, score_threshold)
 
 
 if __name__ == '__main__':
