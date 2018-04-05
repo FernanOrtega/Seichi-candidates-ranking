@@ -49,7 +49,7 @@ def main():
     if len(args) != 7:
         print('Wrong number of arguments')
         print('Usage (relative paths!!): main.py <dataset path> <lang> <word2vec model path>'
-              ' <# folds> <model option> <output csv path>')
+              ' <# folds> <model option> <output csv path> <score threshold>')
         exit()
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -62,7 +62,7 @@ def main():
     n_splits = int(args[3])
     model_option = get_model(args[4])
     output_csv_path = os.path.join(dir_path, args[5])
-    score_threshold = int(args[6])
+    score_threshold = float(args[6])
 
     execute_experiments(data_set, w2v_model, n_splits, model_option, output_csv_path, score_threshold)
 
