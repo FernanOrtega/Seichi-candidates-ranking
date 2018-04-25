@@ -1,2 +1,2 @@
-# Bis18
-Python project with the implementation of the paper submitted to BIS'18 conference.
+# Candidates ranking
+Python project with the implementation of a proposal to mine conditions.
